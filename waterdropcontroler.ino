@@ -1,55 +1,37 @@
 #include "Wire.h" // Pour  I2C
 #include "LCD.h" // Pour ecran LCD
 #include "LiquidCrystal_I2C.h" // Added library*
-#include <multiCameraIrControl.h> // Librairie Infra rouge
-
-Canon myCamera(9);
-
+#include <multiCameraIrControl.h> // Librairie Infra rouge Canon 7d
+Canon myCamera(9); // INITIALISATION CAMERA IR
 LiquidCrystal_I2C lcd(0x27,2,1,0,4,5,6,7); 
-
-
-
-
-
-#define outputA 6
-#define outputB 7
-#define switchPin 3
-#define VALVE 13
-
+#define outputA 6 // PIN POUR ROTARY ENCODER
+#define outputB 7 // PIN POUR ROTARY ENCODER
+#define switchPin 3 // PUSH DU ROTARY ENCODER
+#define VALVE 13  // CONTROLEUR VALVE
 int counter = 0; 
 int aState;
 int aLastState;  
-int count;
-int DIAMG1;
-int DIAMG2;
-int DELAI1;
-int DELAI2;
-
-
-int passFlag; // FLAG COUNTER FOR LCD CLEAR SECTION 1
-int passFlag1; // FLAG COUNTER FOR LCD CLEAR SECTION 2
-int passFlag2; // FLAG COUNTER FOR LCD CLEAR SECTION 3
-int passFlag3; // FLAG COUNTER FOR LCD CLEAR SECTION 4
-int val = 0; // variable for reading the pin status
+int count; // COMPTEUR SECTIONS
+int DIAMG1; // DIAMETRE GOUTTE 1
+int DIAMG2; // DIAMETRE GOUTTE 2
+int DELAI1; // DELAI AVANT GOUTTE 2
+int DELAI2; // DELAI AVANT OBTURATION
+int passFlag; // FLAG POUR CONTROLER SECTION 1
+int passFlag1; // FLAGPOUR CONTROLER SECTION 2
+int passFlag2; // FLAG POUR CONTROLER SECTION 3
+int passFlag3; // FLAG POUR CONTROLERR SECTION 4
+int val = 0; // NON UTILISEE, MAIS A NE PAS SUPPRIMER (SINON CA BUG)
 int currentState = 0;
 int previousState = 0;
 
-
 void setup()
-
-
-
-
-
 {
-
   
    // Preparation écran lcd
   
    lcd.begin (20,4); // 16 x 2 LCD module
    lcd.setBacklightPin(3,POSITIVE); // BL, BL_POL
    lcd.setBacklight(HIGH);
- 
 
 Serial.begin(9600);
    pinMode (outputA,INPUT);
@@ -59,11 +41,8 @@ Serial.begin(9600);
    Serial.begin (9600);
    // Reads the initial state of the outputA
    aLastState = digitalRead(outputA);   
-
-
    
 }
-
 
 void loop() { 
 
@@ -94,8 +73,6 @@ lcd.print ("JK / 2019");
 delay(2000);
 lcd.clear();
 lcd.setCursor(0,2);
-
-
 lcd.print("[]");
 delay(500);
 lcd.print("[]");
@@ -106,7 +83,6 @@ lcd.print("[]");
 delay(500);
 lcd.print("[]");
 delay(500);
-
 lcd.clear();
  lcd.setCursor(0,2);
 lcd.print ("PUSH BUTTON TO START");
@@ -139,10 +115,6 @@ previousState = currentState;
  }
    lcd.setCursor(0,0);
    lcd.print ("DIAMETRE GOUTTE 1");
-
-
-
-
         aState = digitalRead(outputA); // Reads the "current" state of the outputA
    // If the previous and the current state of the outputA are different, that means a Pulse has occured
    if (aState != aLastState){     
@@ -157,7 +129,6 @@ previousState = currentState;
     
    } 
    aLastState = aState; // Updates the previous state of the outputA with the current state
-
 
    
 } 
@@ -293,13 +264,6 @@ previousState = currentState;
    aLastState = aState; // Updates the previous state of the outputA with the current state
 } 
 
-
-
-
-
-
-
-
 while (counter == 6) {
 
   val = digitalRead(switchPin); // read input value
@@ -350,13 +314,9 @@ Serial.println(DELAI2);
   passFlag3 ++;
  }
   
-
-
-
-  
+ 
      
 } 
-
 
 
 
