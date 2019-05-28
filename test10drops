@@ -1,0 +1,77 @@
+#include "Wire.h" // Pour  I2C
+#include "LCD.h" // Pour ecran LCD
+#include "LiquidCrystal_I2C.h" // Added library*
+#include <multiCameraIrControl.h> // Librairie Infra rouge Canon 7d
+Canon myCamera(9); // INITIALISATION CAMERA IR
+LiquidCrystal_I2C lcd(0x27,2,1,0,4,5,6,7); 
+#define outputA 6 // PIN POUR ROTARY ENCODER
+#define outputB 7 // PIN POUR ROTARY ENCODER
+#define switchPin 3 // PUSH DU ROTARY ENCODER
+#define VALVE 13  // CONTROLEUR VALVE
+int counter = 0; 
+int aState;
+int aLastState;  
+int count; // COMPTEUR SECTIONS
+int DIAMG1; // DIAMETRE GOUTTE 1
+int DIAMG2; // DIAMETRE GOUTTE 2
+int DELAI1; // DELAI AVANT GOUTTE 2
+int DELAI2; // DELAI AVANT OBTURATION
+int passFlag; // FLAG POUR CONTROLER SECTION 1
+int passFlag1; // FLAGPOUR CONTROLER SECTION 2
+int passFlag2; // FLAG POUR CONTROLER SECTION 3
+int passFlag3; // FLAG POUR CONTROLERR SECTION 4
+int val = 0; // NON UTILISEE, MAIS A NE PAS SUPPRIMER (SINON CA BUG)
+int currentState = 0;
+int previousState = 0;
+int DELAI0 = 180;
+int DELAIG = 78;
+int douche = 1;
+void setup()
+{
+  
+   // Preparation écran lcd
+  
+   lcd.begin (20,4); // 16 x 2 LCD module
+   lcd.setBacklightPin(3,POSITIVE); // BL, BL_POL
+   lcd.setBacklight(HIGH);
+
+Serial.begin(9600);
+   pinMode (outputA,INPUT);
+   pinMode (outputB,INPUT);
+   pinMode (VALVE,OUTPUT);
+   pinMode(switchPin, INPUT_PULLUP);
+   Serial.begin (9600);
+   // Reads the initial state of the outputA
+   aLastState = digitalRead(outputA);   
+   
+}
+
+void loop() { 
+
+
+if (douche < 10) {
+
+// DIAMETRE GOUTTE 1
+ digitalWrite(VALVE, HIGH);
+ delay (10);
+ digitalWrite(VALVE, LOW);
+douche = douche +1;
+}
+ delay (DELAIG);
+ digitalWrite(VALVE, HIGH);
+ delay (5);
+ digitalWrite(VALVE, LOW);
+ 
+// DELAI 1
+ delay (DELAI0);
+ myCamera.shutterNow();
+// DELAI0 = DELAI0 + 5;
+ DELAIG = DELAIG +2 ;
+ lcd.setCursor(0,0);
+ lcd.print(DELAIG);
+ delay(10000);
+ lcd.clear();
+} 
+
+
+ 
